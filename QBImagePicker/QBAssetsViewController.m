@@ -334,6 +334,19 @@
 
 - (void)updateDoneButtonState
 {
+    NSInteger selectedCount = self.imagePickerController.selectedAssetURLs.count;
+    
+    // Validation
+    NSString *rightBarItemTitle;
+    if (selectedCount>1) {
+        rightBarItemTitle = [NSString stringWithFormat:@"完成(%d)",selectedCount-1];
+    }else{
+        rightBarItemTitle = @"完成";
+    }
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+    [self.navigationItem setRightBarButtonItem:item];
+    
+    
     self.doneButton.enabled = [self isMinimumSelectionLimitFulfilled];
 }
 
