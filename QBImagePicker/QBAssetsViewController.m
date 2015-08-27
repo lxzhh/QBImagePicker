@@ -343,8 +343,8 @@
     }else{
         rightBarItemTitle = @"完成";
     }
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
-    [self.navigationItem setRightBarButtonItem:item];
+    self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+    [self.navigationItem setRightBarButtonItem:self.doneButton];
     
     
     self.doneButton.enabled = [self isMinimumSelectionLimitFulfilled];
