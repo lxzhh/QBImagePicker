@@ -371,8 +371,21 @@
     
     // Image
     ALAsset *asset = self.assets[indexPath.item];
-    UIImage *image = [UIImage imageWithCGImage:[asset thumbnail]];
-    cell.imageView.image = image;
+    
+    //TODO:iOS 9之前asset的thumbnail返回的图是150 * 150，9上变成了75 * 75，所以看起来是糊的
+    //这里直接取大图aspectRatioThumbnail
+    //本来是想在后台线程处理成小图再塞回来，但在4s上测试发现，直接把大图塞给imageView的性能居然也不错，和小图相差无几
+    //暂时先这么做，后续替换成Photos的API
+    if (![self respondsToSelector:@selector(loadViewIfNeeded)])//iOS 9
+    {
+        UIImage *image = [UIImage imageWithCGImage:[asset aspectRatioThumbnail]];
+        cell.imageView.image = image;
+    }
+    else
+    {
+        UIImage *image = [UIImage imageWithCGImage:[asset thumbnail]];
+        cell.imageView.image = image;
+    }
     
     // Video indicator
     NSString *assetType = [asset valueForProperty:ALAssetPropertyType];
