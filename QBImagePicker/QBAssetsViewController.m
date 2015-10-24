@@ -338,8 +338,8 @@
     
     // Validation
     NSString *rightBarItemTitle;
-    if (selectedCount>1) {
-        rightBarItemTitle = [NSString stringWithFormat:@"完成(%d)",selectedCount-1];
+    if (selectedCount>0) {
+        rightBarItemTitle = [NSString stringWithFormat:@"完成(%d)",selectedCount];
     }else{
         rightBarItemTitle = @"完成";
     }
