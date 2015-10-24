@@ -376,7 +376,7 @@
     //这里直接取大图aspectRatioThumbnail
     //本来是想在后台线程处理成小图再塞回来，但在4s上测试发现，直接把大图塞给imageView的性能居然也不错，和小图相差无几
     //暂时先这么做，后续替换成Photos的API
-    if (![self respondsToSelector:@selector(loadViewIfNeeded)])//iOS 9
+    if ([self respondsToSelector:@selector(loadViewIfNeeded)])//iOS 9
     {
         UIImage *image = [UIImage imageWithCGImage:[asset aspectRatioThumbnail]];
         cell.imageView.image = image;
