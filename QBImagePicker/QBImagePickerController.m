@@ -10,6 +10,9 @@
 
 // ViewControllers
 #import "QBAlbumsViewController.h"
+#import "QBiOS8AlbumsViewController.h"
+
+#define iOS8OrLater ([UIDevice currentDevice].systemVersion.floatValue >= 8.0)
 
 @interface QBImagePickerController ()
 
@@ -58,8 +61,14 @@
         [self setUpAlbumsViewController];
         
         // Set instance
-        QBAlbumsViewController *albumsViewController = (QBAlbumsViewController *)self.albumsNavigationController.topViewController;
-        albumsViewController.imagePickerController = self;
+        if (iOS8OrLater) {
+            QBiOS8AlbumsViewController *albumsViewController = (QBiOS8AlbumsViewController *)self.albumsNavigationController.topViewController;
+            albumsViewController.imagePickerController = self;
+        }else{
+            QBAlbumsViewController *albumsViewController = (QBAlbumsViewController *)self.albumsNavigationController.topViewController;
+            albumsViewController.imagePickerController = self;
+        }
+        
     }
     
     return self;
@@ -69,7 +78,8 @@
 {
     // Add QBAlbumsViewController as a child
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"QBImagePicker" bundle:self.assetBundle];
-    UINavigationController *navigationController = [storyboard instantiateViewControllerWithIdentifier:@"AlbumsNavigationController"];
+    NSString *controllerIdentifier = iOS8OrLater? @"iOS8AlbumsNavigationController" : @"AlbumsNavigationController";
+    UINavigationController *navigationController = [storyboard instantiateViewControllerWithIdentifier:controllerIdentifier];
     
     [self addChildViewController:navigationController];
     
