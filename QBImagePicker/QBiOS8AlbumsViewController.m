@@ -44,7 +44,7 @@
         [self.tableView reloadData];
     }];
     
-   }
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -153,7 +153,7 @@
 - (void)updateAssetsGroupsWithCompletion:(void (^)(void))completion
 {
     [self fetchAssetsGroupsWithTypes:self.imagePickerController.groupTypes completion:^(NSArray *assetsGroups) {
-
+        
         self.assetCollections = assetsGroups;
         
         if (completion) {
@@ -176,7 +176,7 @@
     //其他相册
     PHFetchOptions *userAlbumsOptions = [PHFetchOptions new];
     userAlbumsOptions.predicate = [NSPredicate predicateWithFormat:@"estimatedAssetCount > 0"];
-    userAlbumsOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES]];
+    userAlbumsOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
     PHFetchResult *userAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:userAlbumsOptions];
     
     [userAlbums enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL *stop) {
@@ -205,8 +205,34 @@
     };
     
     for (NSURL *assetURL in selectedAssetURLs) {
-        PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetURL.absoluteString] options:nil];
-        [assets addObject:[fetchResult firstObject]];
+        //是PHAsset
+        PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetURL.absoluteString] options:nil];
+        __block PHAsset *asset;
+        if (result.count >0) {
+            asset = [result firstObject];
+        }else{
+            dispatch_semaphore_t    semaphore = dispatch_semaphore_create(0);
+            
+            PHFetchOptions *userAlbumsOptions = [PHFetchOptions new];
+            userAlbumsOptions.predicate = [NSPredicate predicateWithFormat:@"estimatedAssetCount > 0"];
+            PHFetchResult *userAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumMyPhotoStream options:userAlbumsOptions];
+            
+            [userAlbums enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx1, BOOL *stop) {
+                NSLog(@"album title %@", collection.localizedTitle);
+                PHFetchOptions *fetchOptions = [PHFetchOptions new];
+                fetchOptions.predicate = [NSPredicate predicateWithFormat:@"self.localIdentifier CONTAINS [cd] %@",assetURL.absoluteString];
+                PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:collection options:fetchOptions];
+                if ([assetsFetchResult count]>0) {
+                    asset = [assetsFetchResult firstObject];
+                    NSLog(@"assetsFetchResult:%@",asset);
+                }
+                dispatch_semaphore_signal(semaphore);
+                
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            
+        }
+        [assets addObject:asset];
         checkNumberOfAssets();
     }
 }
@@ -260,7 +286,7 @@
     cell.imageView3.hidden = YES;
     cell.imageView2.hidden = YES;
     
-
+    
     PHFetchOptions *fetchOptions = [[PHFetchOptions alloc] init];
     fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     PHFetchResult *fetchResult = [PHAsset fetchKeyAssetsInAssetCollection:assetsGroup options:fetchOptions];
@@ -279,8 +305,9 @@
     // Album title
     cell.titleLabel.text = [assetsGroup localizedTitle];
     
+    PHFetchResult *assets = [PHAsset fetchAssetsInAssetCollection:assetsGroup options:nil];
     // Number of photos
-    cell.countLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)[assetsGroup estimatedAssetCount]];
+    cell.countLabel.text = [NSString stringWithFormat:@"%lu", assets.count];
     
     return cell;
 }
