@@ -43,6 +43,7 @@
 
 
 -(void)prepareForReuse{
+    [super prepareForReuse];
     if (self.requestId > 0) {
         [[PHImageManager defaultManager] cancelImageRequest:self.requestId];
     }
