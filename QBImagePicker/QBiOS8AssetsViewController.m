@@ -321,10 +321,10 @@
     NSString *rightBarItemTitle;
     
     NSBundle *bundle = self.imagePickerController.assetBundle;
-    if (selectedCount>1) {
+    if (selectedCount>0) {
         rightBarItemTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"完成(%d)", @"QBImagePicker", bundle, nil),selectedCount];
     }else{
-        rightBarItemTitle = @"完成";
+        rightBarItemTitle = NSLocalizedStringFromTableInBundle(@"完成", @"QBImagePicker", bundle, nil);
     }
     self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
     [self.navigationItem setRightBarButtonItem:self.doneButton];
