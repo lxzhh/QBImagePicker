@@ -227,7 +227,6 @@
     __block NSUInteger numberOfVideos = 0;
     
     PHFetchOptions *fetchOptions = [[PHFetchOptions alloc] init];
-    fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:YES]];
     PHFetchResult *fetchResult = [PHAsset fetchAssetsInAssetCollection:self.photoCollection options:fetchOptions];
     [fetchResult enumerateObjectsUsingBlock:^(PHAsset*  _Nonnull result, NSUInteger idx, BOOL * _Nonnull stop) {
         if (result) {
