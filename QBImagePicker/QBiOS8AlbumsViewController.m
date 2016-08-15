@@ -173,18 +173,30 @@
     //胶卷相册
     [assetCollections addObject:assetCollection];
     
-    //其他相册
-    PHFetchOptions *userAlbumsOptions = [PHFetchOptions new];
-    userAlbumsOptions.predicate = [NSPredicate predicateWithFormat:@"estimatedAssetCount > 0"];
-    userAlbumsOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
-    PHFetchResult *userAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:userAlbumsOptions];
-    
-    [userAlbums enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL *stop) {
-        [assetCollections addObject:collection];
-    }];
-    
-    if(completion){
-        completion(assetCollections);
+    //胶卷相册
+    if(assetCollection){
+        [assetCollections addObject:assetCollection];
+        //照片流
+        PHFetchOptions *streamAlbumsOptions = [PHFetchOptions new];
+        streamAlbumsOptions.predicate = [NSPredicate predicateWithFormat:@"estimatedAssetCount > 0"];
+        PHFetchResult *streamAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumMyPhotoStream options:streamAlbumsOptions];
+        
+        [streamAlbums enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL *stop) {
+            [assetCollections addObject:collection];
+        }];
+        //其他相册
+        PHFetchOptions *userAlbumsOptions = [PHFetchOptions new];
+        userAlbumsOptions.predicate = [NSPredicate predicateWithFormat:@"estimatedAssetCount > 0"];
+        //        userAlbumsOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
+        PHFetchResult *userAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:userAlbumsOptions];
+        
+        [userAlbums enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL *stop) {
+            [assetCollections addObject:collection];
+        }];
+        
+        if(completion){
+            completion(assetCollections);
+        }
     }
 }
 
