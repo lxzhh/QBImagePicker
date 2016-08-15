@@ -356,11 +356,10 @@
     PHAsset *asset = self.assets[indexPath.item];
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    
+    options.synchronous = YES;
     CGFloat scale = [UIScreen mainScreen].scale;
     CGFloat dimension = 78.0f;
     CGSize size = CGSizeMake(dimension*scale, dimension*scale);
-    
     
     [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage *result, NSDictionary *info) {
         cell.imageView.image = result;
