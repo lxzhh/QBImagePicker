@@ -168,6 +168,14 @@
 
 #pragma mark - Actions
 
+- (IBAction)nextStep:(id)sender{
+    if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerController:nextStepsWithSelectAssets:)]) {
+        [self fetchAssetsFromSelectedAssetURLsWithCompletion:^(NSArray *assets) {
+            [self.imagePickerController.delegate qb_imagePickerController:self.imagePickerController nextStepsWithSelectAssets:assets];
+        }];
+    }
+}
+
 - (IBAction)done:(id)sender
 {
     if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerController:didSelectAssets:)]) {
@@ -328,7 +336,7 @@
         }else{
             rightBarItemTitle = NSLocalizedStringFromTableInBundle(@"下一步", @"QBImagePicker", bundle, nil);
         }
-        self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+        self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(nextStep:)];
         [self.navigationItem setRightBarButtonItem:self.doneButton];
     }else{
         //直接完成

@@ -98,7 +98,13 @@
         [self.imagePickerController.delegate qb_imagePickerControllerDidCancel:self.imagePickerController];
     }
 }
-
+- (IBAction)nextStep:(id)sender{
+    if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerController:nextStepsWithSelectAssets:)]) {
+        [self fetchAssetsFromSelectedAssetURLsWithCompletion:^(NSArray *assets) {
+            [self.imagePickerController.delegate qb_imagePickerController:self.imagePickerController nextStepsWithSelectAssets:assets];
+        }];
+    }
+}
 - (IBAction)done:(id)sender
 {
     if ([self.imagePickerController.delegate respondsToSelector:@selector(qb_imagePickerController:didSelectAssets:)]) {
