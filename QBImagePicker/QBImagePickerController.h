@@ -16,6 +16,8 @@
 @optional
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAsset:(ALAsset *)asset;
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAssets:(NSArray *)assets;
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController nextStepsWithSelectAssets:(NSArray *)assets;
+
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController;
 
 - (BOOL)qb_imagePickerController:(QBImagePickerController *)imagePickerController shouldSelectAsset:(ALAsset *)asset;
@@ -41,7 +43,7 @@ typedef NS_ENUM(NSUInteger, QBImagePickerControllerFilterType) {
 
 @property (nonatomic, copy) NSString *prompt;
 @property (nonatomic, assign) BOOL showsNumberOfSelectedAssets;
-
+@property (nonatomic, assign) BOOL hasNextSteps;
 @property (nonatomic, assign) NSUInteger numberOfColumnsInPortrait;
 @property (nonatomic, assign) NSUInteger numberOfColumnsInLandscape;
 

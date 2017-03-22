@@ -321,13 +321,26 @@
     NSString *rightBarItemTitle;
     
     NSBundle *bundle = self.imagePickerController.assetBundle;
-    if (selectedCount>0) {
-        rightBarItemTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"完成(%d)", @"QBImagePicker", bundle, nil),selectedCount];
+    if (self.imagePickerController.hasNextSteps) {
+        //如果有下一步
+        if (selectedCount>0) {
+            rightBarItemTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"下一步(%d)", @"QBImagePicker", bundle, nil),selectedCount];
+        }else{
+            rightBarItemTitle = NSLocalizedStringFromTableInBundle(@"下一步", @"QBImagePicker", bundle, nil);
+        }
+        self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+        [self.navigationItem setRightBarButtonItem:self.doneButton];
     }else{
-        rightBarItemTitle = NSLocalizedStringFromTableInBundle(@"完成", @"QBImagePicker", bundle, nil);
+        //直接完成
+        if (selectedCount>0) {
+            rightBarItemTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"完成(%d)", @"QBImagePicker", bundle, nil),selectedCount];
+        }else{
+            rightBarItemTitle = NSLocalizedStringFromTableInBundle(@"完成", @"QBImagePicker", bundle, nil);
+        }
+        self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
+        [self.navigationItem setRightBarButtonItem:self.doneButton];
     }
-    self.doneButton = [[UIBarButtonItem alloc] initWithTitle:rightBarItemTitle style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
-    [self.navigationItem setRightBarButtonItem:self.doneButton];
+    
     
     
     self.doneButton.enabled = [self isMinimumSelectionLimitFulfilled];
